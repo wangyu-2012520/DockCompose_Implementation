@@ -29,3 +29,5 @@ entrypoint - Entrypoint sets the command and parameters that will be executed fi
 
 cmd - The main purpose of a CMD (Dockerfiles) / command (Docker Compose files) is to provide defaults when executing a container (it is more like an argeument passing to executing container). These will be executed after the entrypoint.
 For example, if you ran docker run <image>, then the commands and parameters specified by CMD / command in your Dockerfiles would be executed.
+    
+NOTE: There can only be one CMD instruction in a Dockerfile. If you list more than one CMD, then only the last CMD will take effect.
