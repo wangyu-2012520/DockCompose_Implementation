@@ -22,3 +22,10 @@ In my code, it looks like
 ```  
 
 **Note: Setting entrypoint both overrides any default entrypoint set on the service’s image with the ENTRYPOINT Dockerfile instruction, and clears out any default command on the image - meaning that if there’s a CMD instruction in the Dockerfile, it is ignored**.
+
+## entrypoint vs cmd
+
+entrypoint - Entrypoint sets the command and parameters that will be executed first when a container is run.
+
+cmd - The main purpose of a CMD (Dockerfiles) / command (Docker Compose files) is to provide defaults when executing a container (it is more like an argeument passing to executing file). These will be executed after the entrypoint.
+For example, if you ran docker run <image>, then the commands and parameters specified by CMD / command in your Dockerfiles would be executed.
