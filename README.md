@@ -27,5 +27,5 @@ In my code, it looks like
 
 entrypoint - Entrypoint sets the command and parameters that will be executed first when a container is run.
 
-cmd - The main purpose of a CMD (Dockerfiles) / command (Docker Compose files) is to provide defaults when executing a container (it is more like an argeument passing to executing file). These will be executed after the entrypoint.
+cmd - The main purpose of a CMD (Dockerfiles) / command (Docker Compose files) is to provide defaults when executing a container (it is more like an argeument passing to executing container). These will be executed after the entrypoint.
 For example, if you ran docker run <image>, then the commands and parameters specified by CMD / command in your Dockerfiles would be executed.
