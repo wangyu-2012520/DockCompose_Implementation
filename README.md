@@ -33,18 +33,23 @@ For example, if you ran docker run <image>, then the commands and parameters spe
 NOTE: There can only be one CMD instruction in a Dockerfile. If you list more than one CMD, then only the last CMD will take effect.
 
 ## example 
+here is the example of one docker-compose file. The following docker-compose file contains 5 docker containers, some of them are images, some of them will build images and run container. 
+
+There is dependency on each container, when docker-compose file is fire /up, all docker containers are trigger /up in order. For example, the key word 'depends_on' used on image 'transit-generator' only means that image 'transit-generator' will run straight after both images 'mssql' and 'mock-server' are up, but it does not guarantee that iamge 'transit-generator' will wait until images 'mssql' and 'mock-server' are fully ready. 
+
+This example is quite good example, because image 'mssql' will take up to 7-8 seconds to restore everything, get ready and 1-2 seconds to import init data, if there is no manual interaction the image 'transit-generator' will try to read data from database and tables and get failed (because image 'transit-generator' is quick, it only takes it 3 seconds to reach the lines of reading database, but the database is not ready yet). In this case, we need to put image 'transit-generator' on hold and let it sleep 10s before it fire up.
 ```
 version: '3'
 services:
   mock-server:
     build:
-      context: ../../WooliesX.Satalia.MockServer
+      context: ../../Woo.Sat.MockServer
     command: ["micro-service", "./resources/mockPostAuth.json", "./resources/mockGetAllStores.json", "./resources/mockPlans_cutoffTime_before.json ./resources/mockPlans_cutoffTime_after.json"]
     ports:
       - "5002:5002"
   mssql:
     build:
-      context: ../../WooliesX.TransitFile.Database
+      context: ../../Woo.TransitFile.Database
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=G00dPassw0rd
@@ -52,7 +57,7 @@ services:
       - "1433:1433"
     restart: always 
   store-retriever:
-    image: "wowdevcontainers.azurecr.io/store-retriever"
+    image: "store-retriever"
     ports:
       - "5003:5002"
     depends_on:
@@ -61,7 +66,7 @@ services:
     env_file:
       - ../dockersupport/env-variables.env
   transit-generator:
-    image: "wowdevcontainers.azurecr.io/transit-generator"
+    image: "transit-generator"
     ports:
       - "5004:5002"
     depends_on:
@@ -71,7 +76,7 @@ services:
       - ../dockersupport/env-variables.env
     environment:
       - SFG_RouteFinalise_CutoffTime=23:59
-    entrypoint: sh -c "sleep 10 && dotnet WooliesX.Satalia.TransitFileGenerator.Service.dll"
+    entrypoint: sh -c "sleep 10 && dotnet Woo.Sat.TransitFileGenerator.Service.dll"
   integration-test:
     build:
       context: ../
